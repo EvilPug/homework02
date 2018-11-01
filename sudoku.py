@@ -25,7 +25,12 @@ def group(values, n):
     >>> group([1,2,3,4,5,6,7,8,9], 3)
     [[1, 2, 3], [4, 5, 6], [7, 8, 9]]
     """
-    pass
+    valueslen = len(values)
+    grouped = [0] * n
+    div = valueslen // n
+    for i in range(div):
+         grouped[i] = values[n*i:n + n*i]
+    return grouped
 
 
 def get_row(values, pos):
