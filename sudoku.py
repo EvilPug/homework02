@@ -134,12 +134,37 @@ def solve(grid: list) -> list:
     >>> solve(grid)
     [['5', '3', '4', '6', '7', '8', '9', '1', '2'], ['6', '7', '2', '1', '9', '5', '3', '4', '8'], ['1', '9', '8', '3', '4', '2', '5', '6', '7'], ['8', '5', '9', '7', '6', '1', '4', '2', '3'], ['4', '2', '6', '8', '5', '3', '7', '9', '1'], ['7', '1', '3', '9', '2', '4', '8', '5', '6'], ['9', '6', '1', '5', '3', '7', '2', '8', '4'], ['2', '8', '7', '4', '1', '9', '6', '3', '5'], ['3', '4', '5', '2', '8', '6', '1', '7', '9']]
     """
-    pass
+    pos = find_empty_positions(grid)
+    if pos == (-1, -1):
+        return grid
+    row, col = pos
+    for value in find_possible_values(grid, pos):
+        grid[row][col] = value
+        solution = solve(grid)
+        if solution:
+            return solution
+    grid[row][col] = '.'
+    return []
 
 
 def check_solution(solution: list) -> bool:
     """ Если решение solution верно, то вернуть True, в противном случае False """
-    pass
+    for row in range(len(solution)):
+        values = set(get_row(solution, (row, 0)))
+        if values != set('123456789'):
+            return False
+
+    for col in range(len(solution)):
+        values = set(get_col(solution, (0, col)))
+        if values != set('123456789'):
+            return False
+
+    for row in (0, 3, 6):
+        for col in (0, 3, 6):
+            values = set(get_block(solution, (row, col)))
+            if values != set('123456789'):
+                return False
+    return True
 
 def generate_sudoku(N: int) -> list:
     """ Генерация судоку заполненного на N элементов
@@ -163,7 +188,15 @@ def generate_sudoku(N: int) -> list:
     >>> check_solution(solution)
     True
     """
-    pass
+    grid = solve([['.'] * 9 for _ in range(9)])
+    N = 81 - min(81, N)
+    while N > 0:
+        row = random.randint(0, 8)
+        col = random.randint(0, 8)
+        if grid[row][col] != '.':
+            grid[row][col] = '.'
+            N -= 1
+    return grid
 
 if __name__ == '__main__':
     for fname in ['puzzle1.txt', 'puzzle2.txt', 'puzzle3.txt']:
