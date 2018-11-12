@@ -1,3 +1,6 @@
+import random
+
+
 def read_sudoku(filename: str) -> list:
     """ Прочитать Судоку из указанного файла """
     digits = [c for c in open(filename).read() if c in '123456789.']
@@ -93,7 +96,12 @@ def find_empty_positions(grid: list) -> tuple:
     >>> find_empty_positions([['1', '2', '3'], ['4', '5', '6'], ['.', '8', '9']])
     (2, 0)
     """
-    pass
+    for row in range(len(grid)):
+        for col in range(len(grid[row])):
+            if grid[row][col] == '.':
+                return (row, col)
+
+    return (-1, -1)
 
 
 def find_possible_values(grid: list, pos: tuple) -> set:
@@ -107,7 +115,10 @@ def find_possible_values(grid: list, pos: tuple) -> set:
     >>> values == {'2', '5', '9'}
     True
     """
-    pass
+    numb = set('123456789')
+    block = set(get_block(grid, pos))
+    blocks = numb - block - set(get_col(grid, pos)) - set(get_row(grid, pos))
+    return blocks
 
 
 def solve(grid: list) -> list:
